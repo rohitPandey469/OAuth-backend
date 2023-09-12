@@ -1,13 +1,45 @@
-require("dotenv").config();
-// const cookieSession = require("cookie-session");
-const session = require("express-session");
+if (process.env.NODE_ENV !== "production") {
+  // Load environment variables from .env file in non prod environments
+  require("dotenv").config();
+}
+const mongoose = require("mongoose");
 const express = require("express");
-const passportSetup = require("./passport"); // requiring passport.js file
+const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
-const authRoute = require("./routes/auth");
+const path = require("path");
+const oauthRoute = require("./routes/oauth");
+const corsOptions = require("./conifg/corsOptions"); // cors options
+const dbConn = require("./conifg/dbConn");
+const errorHandler = require("./middleware/errorHandler");
+const cookieParser = require("cookie-parser");
+const userRoute = require("./routes/users");
+
+const PORT = process.env.PORT || 5000;
+
+// connected to mongoDB
+dbConn();
 
 const app = express();
+
+// built-in middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: true }));
+
+// built in middleware for json
+app.use(express.json());
+
+// Cross Origin Resource Sharing
+app.use(cors(corsOptions));
+// app.use(cors()); - use it for dev mode
+
+// OAuth Startegys
+require("./strategies/OAuthStrategy");
+
+////////////////Local Strategys
+require("./strategies/jwtStrategy");
+require("./strategies/localStrategy");
+require("./authenticate");
+////////////////
 
 // below three steps for passport
 // app.use(
@@ -28,16 +60,32 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
+// middleware for cookies
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
-app.use("/auth", authRoute);
+// routes
+app.use("/auth", oauthRoute);
+app.use("/users", userRoute);
 
-app.listen("5000", () => {
-  console.log("server is running!");
+// Local Routes
+app.get("/", function (req, res) {
+  res.send({ status: "success" });
+});
+
+app.all("*", (req, res) => {
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"));
+  } else if (req.accepts("json")) {
+    res.json({ error: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
+});
+
+app.use(errorHandler);
+
+mongoose.connection.once("open", () => {
+  console.log("Connected to mongoDB");
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });

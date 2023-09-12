@@ -4,6 +4,7 @@ const CLIENT_URL = "http://localhost:5173";
 
 // succeed
 router.get("/login/success", (req, res) => {
+  // extracting and saving the data to db - after manipulation
   if (req.user) {
     res.status(200).json({
       success: true,
