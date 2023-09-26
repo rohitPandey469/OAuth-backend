@@ -12,7 +12,7 @@ const Session = new Schema({
 });
 
 const User = new Schema({
-  // storing email in username passport providing addons and func chek
+  // storing email in username and passport providing addons and func chek
   displayName: {
     type: String,
     required: true,
@@ -25,6 +25,9 @@ const User = new Schema({
   points: {
     type: Number,
     default: 50,
+  },
+  photos: {
+    type: [String],
   },
   refreshToken: {
     type: [Session],

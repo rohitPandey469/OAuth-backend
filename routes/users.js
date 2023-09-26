@@ -33,7 +33,7 @@ router.post("/signup", (req, res, next) => {
       req.body.password,
       async (err, user) => {
         if (err) {
-          res.statusCode = 250;
+          res.statusCode = 500;
           res.send(err);
         } else {
           // extra fields addons to the User model here
