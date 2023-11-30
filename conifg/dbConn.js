@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const DB_URL =
-  process.env.DATABASE_URI || "mongodb://127.0.0.1:27017/dizania-example";
+  process.env.DATABASE_URI 
+  // || "mongodb://127.0.0.1:27017/dizania-example";
 const dbConn = () => {
   mongoose.connect(DB_URL, {
     useNewUrlParser: true,
