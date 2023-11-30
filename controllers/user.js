@@ -1,5 +1,5 @@
 const User = require("../models/User.js");
-const CLIENT_URL = "http://localhost:5173";
+const CLIENT_URL = "https://shimmering-biscochitos-012b6c.netlify.app";
 
 ////////////////////////////Auth//////////////////////////////////
 const loginSuccess = async (req, res) => {

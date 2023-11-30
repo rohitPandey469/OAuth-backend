@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const passport = require("passport");
-const CLIENT_URL = "http://localhost:5173";
+const CLIENT_URL = "https://shimmering-biscochitos-012b6c.netlify.app";
 const { loginSuccess, loginFailed, logout } = require("../controllers/user.js");
 
 // succeed
