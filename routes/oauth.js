@@ -1,37 +1,16 @@
 const router = require("express").Router();
 const passport = require("passport");
 const CLIENT_URL = "http://localhost:5173";
+const { loginSuccess, loginFailed, logout } = require("../controllers/user.js");
 
 // succeed
-router.get("/login/success", (req, res) => {
-  // extracting and saving the data to db - after manipulation
-  if (req.user) {
-    res.status(200).json({
-      success: true,
-      message: "successful",
-      user: req.user,
-      //cookies: req.cookies
-    });
-  }
-});
+router.get("/login/success", loginSuccess);
 
 // failed
-router.get("/login/failed", (req, res) => {
-  res.status(401).json({
-    success: false,
-    message: "failure",
-  });
-});
+router.get("/login/failed", loginFailed);
 
 // passport logout
-router.get("/logout", function (req, res, next) {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.redirect(CLIENT_URL);
-  });
-});
+router.get("/logout",logout);
 
 // google auth
 router.get("/google", passport.authenticate("google", { scope: ["profile"] }));

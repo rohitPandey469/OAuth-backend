@@ -9,11 +9,11 @@ const passport = require("passport");
 const cors = require("cors");
 const path = require("path");
 const oauthRoute = require("./routes/oauth");
+const userRoute = require("./routes/user");
 const corsOptions = require("./conifg/corsOptions"); // cors options
 const dbConn = require("./conifg/dbConn");
 const errorHandler = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
-const userRoute = require("./routes/users");
 
 const PORT = process.env.PORT || 5000;
 
@@ -34,12 +34,6 @@ app.use(cors(corsOptions));
 
 // OAuth Startegys
 require("./strategies/OAuthStrategy");
-
-////////////////Local Strategys
-require("./strategies/jwtStrategy");
-require("./strategies/localStrategy");
-require("./authenticate");
-////////////////
 
 // below three steps for passport
 // app.use(
@@ -65,7 +59,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routes
 app.use("/auth", oauthRoute);
-app.use("/users", userRoute);
+app.use("/user", userRoute);
 
 // Local Routes
 app.get("/", function (req, res) {
